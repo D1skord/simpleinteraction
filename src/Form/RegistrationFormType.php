@@ -50,16 +50,15 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Пороль'
             ])
             ->add('roles', CollectionType::class, [
-                'entry_type'   => ChoiceType::class,
-                'entry_options'  => [
-                    'choices'  => [
-                        'Ученик' => 'student',
-                        'Преподаватель'     => 'teacher',
+                'entry_type' => ChoiceType::class,
+                'entry_options' => [
+                    'choices' => [
+                        'Ученик' => 'ROLE_STUDENT',
+                        'Преподаватель' => 'ROLE_TEACHER',
                     ],
                 ],
                 'label' => 'Ваша роль'
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
