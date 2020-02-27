@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rooms{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <div class="row">
+      {% for room in rooms %}
+        <div class="col-sm-4 pt-3">
+          <div class="card" style="width: 18rem;">
+            <img src="..." class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">{{ room.name }}</h5>
+              <a href="#" class="btn btn-primary">Перейти</a>
+            </div>
+          </div>
+        </div>
+
+      {% endfor %}
+    </div>
+  </div>
+
+
+
+  {{ form_start(addForm) }}
+  {{ form_row(addForm.name) }}
+  <button class="btn">Add</button>
+  {{ form_end(addForm) }}
+{% endblock %}
