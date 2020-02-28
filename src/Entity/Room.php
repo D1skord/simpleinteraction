@@ -26,9 +26,9 @@ class Room
     private $name;
 
     /**
-     * @ManyToOne(targetEntity="User")
+     * @ManyToOne(targetEntity="Teacher", inversedBy="rooms")
      */
-    private $user;
+    private $teacher;
 
     public function getId(): ?int
     {
@@ -47,16 +47,18 @@ class Room
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getTeacher(): ?Teacher
     {
-        return $this->user;
+        return $this->teacher;
     }
 
-    public function setUser(?User $user): self
+    public function setTeacher(?Teacher $teacher): self
     {
-        $this->user = $user;
+        $this->teacher = $teacher;
 
         return $this;
     }
+
+
 
 }

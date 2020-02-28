@@ -8,10 +8,10 @@
       {% for room in rooms %}
         <div class="col-sm-4 pt-3">
           <div class="card" style="width: 18rem;">
-            <img src="..." class="card-img-top" alt="...">
             <div class="card-body">
-              <h5 class="card-title">{{ room.name }}</h5>
-              <a href="#" class="btn btn-primary">Перейти</a>
+              <h5 class="card-title"><a href="">{{ room.name }}</a></h5>
+              <a href="#" class="btn btn-warning">Редактировать</a>
+              <a href="{{ path('teacher_room_delete', {'roomId': room.id}) }}" class="btn btn-danger">Удалить</a>
             </div>
           </div>
         </div>
@@ -24,6 +24,6 @@
 
   {{ form_start(addForm) }}
   {{ form_row(addForm.name) }}
-  <button class="btn">Add</button>
+  <button class="btn btn-primary">Добавить</button>
   {{ form_end(addForm) }}
 {% endblock %}
