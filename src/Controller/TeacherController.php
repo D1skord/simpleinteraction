@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Room;
+use App\Entity\Teacher;
 use App\Form\AddRoomFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,18 +17,22 @@ class TeacherController extends AbstractController
    */
   public function rooms(Request $request)
   {
+
     $room = new Room();
 
-    $roomRepository = $this->getDoctrine()->getRepository(Room::class);
+      //$rooms = $this->getDoctrine()->getRepository(Room::class)->findAll();
+      $rooms = $this->getUser()->getRooms();
 
-    $rooms = $roomRepository->findByUserId($this->getUser()->getId());
+    //$rooms = $roomRepository->findByUserId($this->getUser()->getId());
+
+
 
 
     $form = $this->createForm(AddRoomFormType::class, $room);
     $form->handleRequest($request);
     if ($form->isSubmitted() && $form->isValid()) {
       // encode the plain password
-      $room->setUser($this->getUser());
+      $room->setTeacher($this->getUser());
       $room = $form->getData();
 
       $entityManager = $this->getDoctrine()->getManager();
@@ -47,10 +52,11 @@ class TeacherController extends AbstractController
   }
 
   /**
-   * @Route("/teacher/rooms/{roomId}", name="teacher_room")
+   * @Route("/teacher/rooms/{roomId}/tasks", name="teacher_rooms_tasks")
    */
   public function room(Request $request)
   {
+
     $room = new Room();
 
     $roomRepository = $this->getDoctrine()->getRepository(Room::class);
@@ -73,25 +79,22 @@ class TeacherController extends AbstractController
 
     }
 
-    return $this->render('teacher/rooms.html.twig', [
+    return $this->render('rooms.html.twig', [
       'addForm' => $form->createView(),
       'rooms' => $rooms
     ]);
   }
 
   /**
-   * @Route("/teacher/room-delete/{roomId}", name="teacher_room_delete")
+   * @Route("/teacher/rooms/{roomId}/delete", name="teacher_rooms_delete")
    */
   public function roomDelete($roomId)
   {
-
-
     $roomRepository = $this->getDoctrine()->getRepository(Room::class);
 
     $room = $roomRepository->findOneBy([
       'id' => $roomId
     ]);
-
 
     $entityManager = $this->getDoctrine()->getManager();
     $entityManager->remove($room);

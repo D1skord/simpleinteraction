@@ -13,10 +13,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/** @Entity */
+/**
+ * @Entity
+ * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
+ */
 class Teacher extends User
 {
+
   /**
    * @ORM\OneToMany(targetEntity="Room", mappedBy="teacher")
    */
@@ -57,4 +62,5 @@ class Teacher extends User
 
       return $this;
   }
+
 }

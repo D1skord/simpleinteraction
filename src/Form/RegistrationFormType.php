@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Teacher;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -23,15 +24,6 @@ class RegistrationFormType extends AbstractType
             ->add('email', TextType::class, [
                 'label' => 'Почтовый адрес'
             ])
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
-                ],
-                'label' => 'Согласен с условиями'
-            ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
                 // this is read and encoded in the controller
@@ -49,22 +41,14 @@ class RegistrationFormType extends AbstractType
                 ],
                 'label' => 'Пороль'
             ])
-            ->add('roles', CollectionType::class, [
-                'entry_type' => ChoiceType::class,
-                'entry_options' => [
-                    'choices' => [
-                        'Ученик' => 'ROLE_STUDENT',
-                        'Преподаватель' => 'ROLE_TEACHER',
-                    ],
-                ],
-                'label' => 'Ваша роль'
-            ]);
+            ->add('role', ChoiceType::class, [
+                'choices'  => [
+                    'Ученик' => 'Student',
+                    'Преподаватель' => 'Teacher'
+                ]]
+            )
+        ;
     }
 
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => User::class,
-        ]);
-    }
+
 }

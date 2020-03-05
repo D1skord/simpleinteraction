@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Teacher;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\LoginFormAuthenticator;
@@ -19,27 +20,31 @@ class RegistrationController extends AbstractController
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, LoginFormAuthenticator $authenticator): Response
     {
-        $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
-        $form->handleRequest($request);
+
+        $form = $this->createForm(RegistrationFormType::class);
+
+      $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $roleClass = "App\Entity\\".$form->get('role')->getData();
+            $newUser = new $roleClass();
             // encode the plain password
-            $user->setPassword(
+            $newUser->setPassword(
                 $passwordEncoder->encodePassword(
-                    $user,
+                    $newUser,
                     $form->get('plainPassword')->getData()
                 )
             );
+            $newUser->setEmail($form->get('email')->getData());
 
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
+            $entityManager->persist($newUser);
             $entityManager->flush();
 
             // do anything else you need here, like send an email
 
             return $guardHandler->authenticateUserAndHandleSuccess(
-                $user,
+                $newUser,
                 $request,
                 $authenticator,
                 'main' // firewall name in security.yaml

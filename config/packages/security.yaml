@@ -5,18 +5,11 @@ security:
 
   # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
   providers:
-    users_in_memory: { memory: null }
-    users:
+    teacher_provider:
       entity:
-        # Класс для пользователя
-        class: 'App\Entity\User'
-        # Свойство для запроса
-        property: 'username'
-      # used to reload user from session & other features (e.g. switch_user)
-    app_user_provider:
-      entity:
-        class: App\Entity\User
+        class: App\Entity\Teacher
         property: email
+
 
   firewalls:
     dev:
@@ -24,7 +17,7 @@ security:
       security: false
     main:
       anonymous: lazy
-      provider: users_in_memory
+      provider: teacher_provider
       guard:
         authenticators:
           - App\Security\LoginFormAuthenticator
@@ -44,5 +37,5 @@ security:
   access_control:
     # - { path: ^/admin, roles: ROLE_ADMIN }
     # - { path: ^/profile, roles: ROLE_USER }
-    - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/teacher, roles: ROLE_TEACHER }
+#    - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#    - { path: ^/teacher, roles: ROLE_TEACHER }
