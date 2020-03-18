@@ -3,8 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Room;
+use App\Entity\Student;
+use App\Entity\Task;
 use App\Entity\Teacher;
 use App\Form\AddRoomFormType;
+use App\Form\AddStudentToRoomFormType;
+use App\Form\AddTaskFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,100 +16,146 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TeacherController extends AbstractController
 {
-  /**
-   * @Route("/teacher/rooms", name="teacher_rooms")
-   */
-  public function rooms(Request $request)
-  {
+    /**
+     * @Route("/teacher/rooms", name="teacher_rooms")
+     */
+    public function rooms(Request $request)
+    {
 
-    $room = new Room();
+        $room = new Room();
 
-      //$rooms = $this->getDoctrine()->getRepository(Room::class)->findAll();
-      $rooms = $this->getUser()->getRooms();
+        $rooms = $this->getUser()->getRooms();
 
-    //$rooms = $roomRepository->findByUserId($this->getUser()->getId());
+        $form = $this->createForm(AddRoomFormType::class, $room);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // encode the plain password
+            //$room->setTeacher($this->getUser());
+            $this->getUser()->addRoom($room);
+            $room = $form->getData();
 
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($room);
+            $entityManager->flush();
+            $this->addFlash(
+                'success',
+                'Комната добавлена!'
+            );
+            return $this->redirectToRoute('teacher_rooms');
+        }
 
-
-
-    $form = $this->createForm(AddRoomFormType::class, $room);
-    $form->handleRequest($request);
-    if ($form->isSubmitted() && $form->isValid()) {
-      // encode the plain password
-      $room->setTeacher($this->getUser());
-      $room = $form->getData();
-
-      $entityManager = $this->getDoctrine()->getManager();
-      $entityManager->persist($room);
-      $entityManager->flush();
-      $this->addFlash(
-        'success',
-        'Комната добавлена!'
-      );
-      return $this->redirectToRoute('teacher_rooms');
+        return $this->render('teacher/rooms.html.twig', [
+            'addForm' => $form->createView(),
+            'rooms' => $rooms
+        ]);
     }
 
-    return $this->render('teacher/rooms.html.twig', [
-      'addForm' => $form->createView(),
-      'rooms' => $rooms
-    ]);
-  }
+    /**
+     * @Route("/teacher/rooms/{roomId}/tasks", name="teacher_rooms_tasks")
+     */
+    public function room(Request $request, $roomId)
+    {
+        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
+        $tasks = $room->getTasks();
 
-  /**
-   * @Route("/teacher/rooms/{roomId}/tasks", name="teacher_rooms_tasks")
-   */
-  public function room(Request $request)
-  {
+        $task = new Task();
 
-    $room = new Room();
+        $form = $this->createForm(AddTaskFormType::class, $task);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $task->setRoom($room);
+            $task = $form->getData();
 
-    $roomRepository = $this->getDoctrine()->getRepository(Room::class);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($task);
+            $entityManager->flush();
+        }
 
-    $rooms = $roomRepository->findByUserId($this->getUser()->getId());
-
-
-    $form = $this->createForm(AddRoomFormType::class, $room);
-    $form->handleRequest($request);
-    if ($form->isSubmitted() && $form->isValid()) {
-      // encode the plain password
-
-      $room->setUser($this->getUser());
-      $room = $form->getData();
-
-      $entityManager = $this->getDoctrine()->getManager();
-      $entityManager->persist($room);
-      $entityManager->flush();
-
-
+        return $this->render('teacher/tasks.html.twig', [
+            'addForm' => $form->createView(),
+            'tasks' => $tasks,
+            'room' => $room
+        ]);
     }
 
-    return $this->render('rooms.html.twig', [
-      'addForm' => $form->createView(),
-      'rooms' => $rooms
-    ]);
-  }
+    /**
+     * @Route("/teacher/rooms/{roomId}/delete", name="teacher_rooms_delete")
+     */
+    public function roomDelete($roomId)
+    {
+        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy([
+            'id' => $roomId
+        ]);
 
-  /**
-   * @Route("/teacher/rooms/{roomId}/delete", name="teacher_rooms_delete")
-   */
-  public function roomDelete($roomId)
-  {
-    $roomRepository = $this->getDoctrine()->getRepository(Room::class);
 
-    $room = $roomRepository->findOneBy([
-      'id' => $roomId
-    ]);
+        $this->getUser()->removeRoom($room);
 
-    $entityManager = $this->getDoctrine()->getManager();
-    $entityManager->remove($room);
-    $entityManager->flush();
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($room);
+        $entityManager->flush();
 
-    $this->addFlash(
-      'success',
-      'Комната удалена!'
-    );
+        $this->addFlash(
+            'success',
+            'Комната удалена!'
+        );
 
-    return $this->redirectToRoute('teacher_rooms');
-  }
+        return $this->redirectToRoute('teacher_rooms');
+    }
 
+
+    /**
+     * @Route("/teacher/rooms/{roomId}/tasks/{taskId}", name="teacher_rooms_tasks_task")
+     */
+    public function task(Request $request, $roomId, $taskId)
+    {
+        $task = $this->getDoctrine()->getRepository(Task::class)->findOneBy(['id' => $taskId]);
+        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
+
+
+        $form = $this->createForm(AddStudentToRoomFormType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $student = $this->getDoctrine()->getRepository(Student::class)->findOneBy(['email' => $form->get('email')->getData()]);
+
+            if (!empty($student)) {
+                $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
+
+                $room->addStudent($student);
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($room);
+                $entityManager->flush();
+
+                $this->addFlash(
+                    'success',
+                    'Студент добавлен!'
+                );
+            } else {
+                $this->addFlash(
+                    'danger',
+                    'Студент не найден!'
+                );
+            }
+
+            return $this->redirectToRoute('teacher_rooms_tasks_task', [
+                'roomId' => $roomId,
+                'taskId' => $taskId,
+            ]);
+        }
+
+
+        return $this->render('teacher/task.html.twig', [
+            'task' => $task,
+            'addStudentForm' => $form->createView(),
+            'students' => $room->getStudents()
+        ]);
+    }
+
+    public function inviteToRoom($roomId, $studentEmail)
+    {
+
+
+        return $this->redirectToRoute('teacher_rooms');
+    }
 }

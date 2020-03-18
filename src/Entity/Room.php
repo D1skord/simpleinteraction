@@ -3,9 +3,12 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
@@ -29,6 +32,22 @@ class Room
      * @ManyToOne(targetEntity="Teacher", inversedBy="rooms")
      */
     private $teacher;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Task", mappedBy="room")
+     */
+    private $tasks;
+
+    /**
+     * @ManyToMany(targetEntity="Student", mappedBy="rooms")
+     */
+    private $students;
+
+    public function __construct()
+    {
+        $this->tasks = new ArrayCollection();
+        $this->students = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -55,6 +74,65 @@ class Room
     public function setTeacher(?Teacher $teacher): self
     {
         $this->teacher = $teacher;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Task[]
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->contains($task)) {
+            $this->tasks->removeElement($task);
+            // set the owning side to null (unless already changed)
+            if ($task->getRoom() === $this) {
+                $task->setRoom(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Student[]
+     */
+    public function getStudents(): Collection
+    {
+        return $this->students;
+    }
+
+    public function addStudent(Student $student): self
+    {
+        if (!$this->students->contains($student)) {
+            $this->students[] = $student;
+            $student->addRoom($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStudent(Student $student): self
+    {
+        if ($this->students->contains($student)) {
+            $this->students->removeElement($student);
+            $student->removeRoom($this);
+        }
 
         return $this;
     }

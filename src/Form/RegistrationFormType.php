@@ -47,6 +47,7 @@ class RegistrationFormType extends AbstractType
                     'Преподаватель' => 'Teacher'
                 ]]
             )
+            ->add('save', SubmitType::class)
         ;
     }
 

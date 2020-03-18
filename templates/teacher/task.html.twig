@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rooms{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+
+      </div>
+      <div class="col-sm-12">
+        Название: {{ task.name }}
+      </div>
+      <div class="col-sm-12">
+        Описание: {{ task.description }}
+      </div>
+
+      <div class="col-sm-12">
+        {% for student in students %}
+          {{ student.email }}
+        {% endfor %}
+      </div>
+
+
+      <div class="col-sm-12">
+        {{ form_start(addStudentForm) }}
+        {{ form_row(addStudentForm.email) }}
+        {{ form_end(addStudentForm) }}
+      </div>
+    </div>
+  </div>
+
+
+
+{% endblock %}

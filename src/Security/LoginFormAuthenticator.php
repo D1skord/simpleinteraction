@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Entity\Student;
 use App\Entity\Teacher;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -66,14 +67,17 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             throw new InvalidCsrfTokenException();
         }
 
-        $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $credentials['email']]);
 
-        if (!$user) {
+
+        if ($student = $this->entityManager->getRepository(Student::class)->findOneBy(['email' => $credentials['email']])) {
+            return $student;
+        } elseif ($teacher = $this->entityManager->getRepository(Teacher::class)->findOneBy(['email' => $credentials['email']])) {
+            return $teacher;
+        } else {
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('Email could not be found.');
         }
 
-        return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
@@ -95,8 +99,10 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             return new RedirectResponse($targetPath);
         }
 
-        // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+
+
+       return new RedirectResponse($this->urlGenerator->generate('teacher_rooms'));
+
     }
 
     protected function getLoginUrl()
