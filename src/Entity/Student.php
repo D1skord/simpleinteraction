@@ -23,9 +23,15 @@ class Student extends User
      */
     private $rooms;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Answer", mappedBy="student")
+     */
+    private $answers;
+
     public function __construct()
     {
         $this->rooms = new ArrayCollection();
+        $this->answers = new ArrayCollection();
     }
 
     /**
@@ -49,6 +55,37 @@ class Student extends User
     {
         if ($this->rooms->contains($room)) {
             $this->rooms->removeElement($room);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Answer[]
+     */
+    public function getAnswers(): Collection
+    {
+        return $this->answers;
+    }
+
+    public function addAnswer(Answer $answer): self
+    {
+        if (!$this->answers->contains($answer)) {
+            $this->answers[] = $answer;
+            $answer->setStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnswer(Answer $answer): self
+    {
+        if ($this->answers->contains($answer)) {
+            $this->answers->removeElement($answer);
+            // set the owning side to null (unless already changed)
+            if ($answer->getStudent() === $this) {
+                $answer->setStudent(null);
+            }
         }
 
         return $this;
