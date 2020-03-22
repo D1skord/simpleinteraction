@@ -51,7 +51,7 @@ class TeacherController extends AbstractController
     }
 
     /**
-     * @Route("/teacher/rooms/{roomId}/tasks", name="teacher_rooms_tasks")
+     * @Route("/teacher/rooms/{roomId}", name="teacher_room")
      */
     public function room(Request $request, $roomId)
     {
@@ -71,7 +71,7 @@ class TeacherController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->render('teacher/tasks.html.twig', [
+        return $this->render('teacher/room.html.twig', [
             'addForm' => $form->createView(),
             'tasks' => $tasks,
             'room' => $room
@@ -79,7 +79,7 @@ class TeacherController extends AbstractController
     }
 
     /**
-     * @Route("/teacher/rooms/{roomId}/delete", name="teacher_rooms_delete")
+     * @Route("/teacher/rooms/{roomId}/delete", name="teacher_room_delete")
      */
     public function roomDelete($roomId)
     {
@@ -104,7 +104,7 @@ class TeacherController extends AbstractController
 
 
     /**
-     * @Route("/teacher/rooms/{roomId}/tasks/{taskId}", name="teacher_rooms_tasks_task")
+     * @Route("/teacher/rooms/{roomId}/task/{taskId}", name="teacher_task")
      */
     public function task(Request $request, $roomId, $taskId)
     {

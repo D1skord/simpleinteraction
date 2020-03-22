@@ -9,9 +9,9 @@
         <div class="col-sm-4 pt-3">
           <div class="card" style="width: 18rem;">
             <div class="card-body">
-              <h5 class="card-title"><a href="{{ path('teacher_rooms_tasks_task', {'roomId': room.id, 'taskId': task.id}) }}">{{ task.name }}</a></h5>
+              <h5 class="card-title"><a href="{{ path('teacher_task', {'roomId': room.id, 'taskId': task.id}) }}">{{ task.name }}</a></h5>
               <a href="#" class="btn btn-warning">Редактировать</a>
-{#              <a href="{{ path('teacher_rooms_delete', {'roomId': room.id}) }}" class="btn btn-danger">Удалить</a>#}
+              <a href="{{ path('teacher_room_delete', {'roomId': room.id}) }}" class="btn btn-danger">Удалить</a>
             </div>
           </div>
         </div>

@@ -9,6 +9,11 @@ security:
       entity:
         class: App\Entity\Teacher
         property: email
+    student_provider:
+      entity:
+        class: App\Entity\Student
+        property: email
+
 
 
   firewalls:
