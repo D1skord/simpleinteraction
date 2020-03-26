@@ -15,7 +15,10 @@ class AddRoomFormType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Имя комнаты'
+                'label' => 'Имя комнаты',
+                'attr' => [
+                    'class' => 'form-group'
+                ]
             ])
             ->add('add', SubmitType::class,[
                 'label' => 'Добавить',

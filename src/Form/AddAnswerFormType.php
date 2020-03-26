@@ -2,7 +2,8 @@
 
 namespace App\Form;
 
-use App\Entity\Task;
+use App\Entity\Answer;
+use App\Entity\Room;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -10,36 +11,30 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AddTaskFormType extends AbstractType
+class AddAnswerFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'Название',
-                'attr' => [
-                    'class' => 'form-group'
-                ]
-            ])
-            ->add('description', TextareaType::class, [
-                'label' => 'Описание',
+            ->add('answer', TextareaType::class, [
+                'label' => 'Ваш ответ',
                 'attr' => [
                     'class' => 'form-group'
                 ]
             ])
             ->add('add', SubmitType::class,[
-                'label' => 'Добавить',
+                'label' => 'Ответить',
                 'attr' => [
                     'class' => 'btn btn-primary'
                 ]
             ])
-           ;
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Task::class,
+            'data_class' => Answer::class,
         ]);
     }
 }

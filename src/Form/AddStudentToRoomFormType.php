@@ -13,7 +13,13 @@ class AddStudentToRoomFormType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'email'
+                'label' => 'email',
+                'row_attr' => [
+                    'class' => 'form-group'
+                ],
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ])
             ->add('invite', SubmitType::class,[
                 'label' => 'Присоединить студента',

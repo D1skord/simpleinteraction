@@ -4,9 +4,11 @@
 namespace App\Controller;
 
 
+use App\Entity\Answer;
 use App\Entity\Room;
 use App\Entity\Student;
 use App\Entity\Task;
+use App\Form\AddAnswerFormType;
 use App\Form\AddRoomFormType;
 use App\Form\AddStudentToRoomFormType;
 use App\Form\AddTaskFormType;
@@ -55,10 +57,36 @@ class StudentController extends AbstractController
        // $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
 
 
+        $answer = $this->getUser()->getAnswer($taskId);
+
+        if (empty($answer)) {
+            $answer = new Answer();
+        }
+
+        $form = $this->createForm(AddAnswerFormType::class, $answer);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $answer = $form->getData();
+            $answer->setTask($task);
+
+            $this->getUser()->addAnswer($answer);
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($this->getUser());
+            $entityManager->flush();
+            $this->addFlash(
+                'success',
+                'Ответ добавлен!'
+            );
+        }
+
 
 
         return $this->render('student/task.html.twig', [
             'task' => $task,
+            'answer' => $answer,
+            'addAnswerStudentForm' => $form->createView(),
         ]);
     }
 

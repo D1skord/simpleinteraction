@@ -24,7 +24,7 @@ class Student extends User
     private $rooms;
 
     /**
-     * @ORM\OneToMany(targetEntity="Answer", mappedBy="student")
+     * @ORM\OneToMany(targetEntity="Answer", mappedBy="student", cascade={"persist"})
      */
     private $answers;
 
@@ -66,6 +66,19 @@ class Student extends User
     public function getAnswers(): Collection
     {
         return $this->answers;
+    }
+
+    public function getAnswer($taskId)
+    {
+       $answers =  $this->getAnswers();
+
+       foreach ($answers as $answer) {
+           if ($answer->getTask()->getId() == $taskId && $answer->getStudent()->getId() == $this->getId()) {
+               return $answer;
+           }
+       }
+
+        return null;
     }
 
     public function addAnswer(Answer $answer): self

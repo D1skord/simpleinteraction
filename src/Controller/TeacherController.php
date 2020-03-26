@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Answer;
 use App\Entity\Room;
 use App\Entity\Student;
 use App\Entity\Task;
 use App\Entity\Teacher;
+use App\Form\AddAnswerFormType;
+use App\Form\AddMarkFormType;
 use App\Form\AddRoomFormType;
 use App\Form\AddStudentToRoomFormType;
 use App\Form\AddTaskFormType;
@@ -113,6 +116,8 @@ class TeacherController extends AbstractController
 
 
         $form = $this->createForm(AddStudentToRoomFormType::class);
+
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -145,17 +150,50 @@ class TeacherController extends AbstractController
         }
 
 
+
+
         return $this->render('teacher/task.html.twig', [
+            'room' => $room,
             'task' => $task,
             'addStudentForm' => $form->createView(),
-            'students' => $room->getStudents()
+            'students' => $room->getStudents(),
         ]);
     }
 
-    public function inviteToRoom($roomId, $studentEmail)
+
+    /**
+     * @Route("/teacher/add-mark", name="teacher_add_mark")
+     */
+    public function AddMark(Request $request)
     {
+        $taskId = $request->request->get('taskId');
+        $studentId =  $request->request->get('studentId');
+        $mark =  $request->request->get('mark');
+
+        dump($studentId);
+
+        $task = $this->getDoctrine()->getRepository(Task::class)->findOneBy(['id' => $taskId]);
 
 
-        return $this->redirectToRoute('teacher_rooms');
+        $student = $this->getDoctrine()->getRepository(Student::class)->findOneBy(['id' => $studentId]);
+        $answer = $student->getAnswer($taskId);
+        $answer->setMark($mark);
+
+
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($answer);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            'Оценка сохранена!'
+        );
+
+
+        return $this->redirectToRoute('teacher_task', [
+            'roomId' => $task->getRoom()->getId(),
+            'taskId' => $task->getId(),
+        ]);
     }
 }

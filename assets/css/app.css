@@ -1,1 +1,5 @@
 @import "sb-admin.css";
+
+.mark-wrapper {
+    width: 200px;
+}

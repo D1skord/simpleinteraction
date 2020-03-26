@@ -15,6 +15,15 @@
         Описание: {{ task.description }}
       </div>
 
+      <div class="col-sm-12">
+        Ваш ответ: {{ answer.answer }}
+      </div>
+
+      <div class="col-sm-12">
+        {{ form_start(addAnswerStudentForm) }}
+        {{ form_row(addAnswerStudentForm.answer) }}
+        {{ form_end(addAnswerStudentForm) }}
+      </div>
 
     </div>
   </div>
