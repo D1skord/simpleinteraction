@@ -10,14 +10,16 @@
       <div class="col-sm-12">
         <h1 class="mt-4">Задание {{ task.name }}</h1>
         <ol class="breadcrumb mb-4">
-          <li class="breadcrumb-item"><a href="{{path('teacher_rooms')}}">Главная</a></li>
-          <li class="breadcrumb-item"><a href="{{ path('teacher_room', {'roomId': room.id}) }}">{{room.name}}</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('teacher_rooms') }}">Главная</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('teacher_room', {'roomId': room.id}) }}">{{ room.name }}</a></li>
           <li class="breadcrumb-item active">{{ task.name }}</li>
         </ol>
       </div>
 
       <div class="col-sm-12">
         Описание: {{ task.description }}
+        Задание: <a href="{{ asset('uploads/' ~ task.file) }}" download><i class="fas fa-file-alt"></i></a>
+
       </div>
 
       <div class="col-sm-12">
@@ -37,16 +39,17 @@
             <tr>
               <th scope="row">{{ key+1 }}</th>
               <td>{{ student.email }}</td>
-              <td>{{ student.getAnswer(task.id).answer }}</td>
+              <td>{{ (student.getAnswer(task.id)) ? student.getAnswer(task.id).answer : "-" }}</td>
               <td>
-                {{ student.getAnswer(task.id).mark }}
-                <div class="mark-wrapper">
-                  <a class="btn btn-link" data-toggle="collapse" href="#collapseExample" role="button"
-                     aria-expanded="false" aria-controls="collapseExample">
-                    Выставить оценку
-                  </a>
+                {% if (student.getAnswer(task.id)) %}
+                  {{ student.getAnswer(task.id).mark }}
+                  <div class="mark-wrapper">
+                    <a class="btn btn-link" data-toggle="collapse" href="#collapseExample" role="button"
+                       aria-expanded="false" aria-controls="collapseExample">
+                      Выставить оценку
+                    </a>
 
-                  <div class="collapse" id="collapseExample">
+                    <div class="collapse" id="collapseExample">
 
                       <form action="{{ path('teacher_add_mark') }}" method="post">
                         <div class="form-group">
@@ -58,8 +61,11 @@
                         <button type="submit" class="btn btn-primary">Сохранить</button>
                       </form>
 
+                    </div>
                   </div>
-                </div>
+                {% else %}
+                  -
+                {% endif %}
               </td>
             </tr>
           {% endfor %}
@@ -70,8 +76,6 @@
 
 
       </div>
-
-
 
 
       <div class="col-sm-4">

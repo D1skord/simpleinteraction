@@ -13,8 +13,10 @@ use App\Form\AddRoomFormType;
 use App\Form\AddStudentToRoomFormType;
 use App\Form\AddTaskFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Transliterator;
 
 
 class TeacherController extends AbstractController
@@ -29,13 +31,13 @@ class TeacherController extends AbstractController
 
         $rooms = $this->getUser()->getRooms();
 
-        $form = $this->createForm(AddRoomFormType::class, $room);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $addRoomForm = $this->createForm(AddRoomFormType::class, $room);
+        $addRoomForm->handleRequest($request);
+        if ($addRoomForm->isSubmitted() && $addRoomForm->isValid()) {
             // encode the plain password
             //$room->setTeacher($this->getUser());
             $this->getUser()->addRoom($room);
-            $room = $form->getData();
+            $room = $addRoomForm->getData();
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($room);
@@ -48,7 +50,7 @@ class TeacherController extends AbstractController
         }
 
         return $this->render('teacher/rooms.html.twig', [
-            'addForm' => $form->createView(),
+            'addRoomForm' => $addRoomForm->createView(),
             'rooms' => $rooms
         ]);
     }
@@ -63,11 +65,34 @@ class TeacherController extends AbstractController
 
         $task = new Task();
 
-        $form = $this->createForm(AddTaskFormType::class, $task);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        $addTaskForm = $this->createForm(AddTaskFormType::class, $task);
+        $addTaskForm->handleRequest($request);
+        if ($addTaskForm->isSubmitted() && $addTaskForm->isValid()) {
             $task->setRoom($room);
-            $task = $form->getData();
+            $task = $addTaskForm->getData();
+
+            $file = $addTaskForm->get('file')->getData();
+
+            if ($file) {
+                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename = urlencode ($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+
+                // Move the file to the directory where brochures are stored
+                try {
+                    $file->move(
+                        $this->getParameter('files_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+
+                // updates the 'brochureFilename' property to store the PDF file name
+                // instead of its contents
+                $task->setFile($newFilename);
+            }
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($task);
@@ -75,7 +100,7 @@ class TeacherController extends AbstractController
         }
 
         return $this->render('teacher/room.html.twig', [
-            'addForm' => $form->createView(),
+            'addTaskForm' => $addTaskForm->createView(),
             'tasks' => $tasks,
             'room' => $room
         ]);

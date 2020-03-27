@@ -31,6 +31,11 @@ class Task
     private $description;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    private $file;
+
+    /**
      * @ManyToOne(targetEntity="Room", inversedBy="tasks")
      */
     private $room;
@@ -113,6 +118,18 @@ class Task
                 $answer->setTask(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFile(): ?string
+    {
+        return $this->file;
+    }
+
+    public function setFile(string $file): self
+    {
+        $this->file = $file;
 
         return $this;
     }

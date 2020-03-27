@@ -23,10 +23,10 @@ class RegistrationController extends AbstractController
 
         $form = $this->createForm(RegistrationFormType::class);
 
-      $form->handleRequest($request);
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $roleClass = "App\Entity\\".$form->get('role')->getData();
+            $roleClass = "App\Entity\\" . $form->get('role')->getData();
             $newUser = new $roleClass();
             // encode the plain password
             $newUser->setPassword(
@@ -43,12 +43,15 @@ class RegistrationController extends AbstractController
 
             // do anything else you need here, like send an email
 
-            return $guardHandler->authenticateUserAndHandleSuccess(
-                $newUser,
-                $request,
-                $authenticator,
-                'main' // firewall name in security.yaml
-            );
+//            return $guardHandler->authenticateUserAndHandleSuccess(
+//                $newUser,
+//                $request,
+//                $authenticator,
+//                'main' // firewall name in security.yaml
+//            );
+            return $this->redirectToRoute('app_login');
+
+
         }
 
         return $this->render('registration/register.html.twig', [

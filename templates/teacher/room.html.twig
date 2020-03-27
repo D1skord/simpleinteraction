@@ -31,11 +31,13 @@
     <div class="row">
       <div class="col-sm-4">
         <div class="card">
-          <h5 class="card-header">Добавление комнаты</h5>
+          <h5 class="card-header">Добавление задания</h5>
           <div class="card-body">
-            {{ form_start(addForm) }}
-            {{ form_row(addForm.name) }}
-            {{ form_end(addForm) }}
+            {{ form_start(addTaskForm) }}
+            {{ form_row(addTaskForm.name) }}
+            {{ form_row(addTaskForm.file) }}
+            {{ form_row(addTaskForm.description) }}
+            {{ form_end(addTaskForm) }}
           </div>
         </div>
       </div>
