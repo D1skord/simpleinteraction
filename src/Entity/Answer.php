@@ -21,7 +21,7 @@ class Answer
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private $answer;
+    private $description;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -34,6 +34,11 @@ class Answer
     private $task;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $file;
+
+    /**
      * @ManyToOne(targetEntity="Student", inversedBy="answers")
      */
     private $student;
@@ -41,18 +46,6 @@ class Answer
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getAnswer(): ?string
-    {
-        return $this->answer;
-    }
-
-    public function setAnswer(string $answer): self
-    {
-        $this->answer = $answer;
-
-        return $this;
     }
 
     public function getMark(): ?int
@@ -87,6 +80,30 @@ class Answer
     public function setStudent(?Student $student): self
     {
         $this->student = $student;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getFile(): ?string
+    {
+        return $this->file;
+    }
+
+    public function setFile(string $file): self
+    {
+        $this->file = $file;
 
         return $this;
     }

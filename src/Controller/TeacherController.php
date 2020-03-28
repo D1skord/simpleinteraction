@@ -107,6 +107,33 @@ class TeacherController extends AbstractController
     }
 
     /**
+     * @Route("/teacher/rooms/{roomId}/edit", name="teacher_room_edit")
+     */
+    public function roomEdit(Request $request, $roomId)
+    {
+        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
+
+        $editRoomForm = $this->createForm(AddRoomFormType::class, $room);
+        $editRoomForm->handleRequest($request);
+        if ($editRoomForm->isSubmitted() && $editRoomForm->isValid()) {
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($room);
+            $entityManager->flush();
+            $this->addFlash(
+                'success',
+                'Комната добавлена!'
+            );
+            return $this->redirectToRoute('teacher_rooms');
+        }
+
+        return $this->render('teacher/room_edit.html.twig', [
+            'editRoomForm' => $editRoomForm->createView(),
+            'room' => $room
+        ]);
+    }
+
+    /**
      * @Route("/teacher/rooms/{roomId}/delete", name="teacher_room_delete")
      */
     public function roomDelete($roomId)
@@ -129,7 +156,6 @@ class TeacherController extends AbstractController
 
         return $this->redirectToRoute('teacher_rooms');
     }
-
 
     /**
      * @Route("/teacher/rooms/{roomId}/task/{taskId}", name="teacher_task")
@@ -168,7 +194,7 @@ class TeacherController extends AbstractController
                 );
             }
 
-            return $this->redirectToRoute('teacher_rooms_tasks_task', [
+            return $this->redirectToRoute('teacher_task', [
                 'roomId' => $roomId,
                 'taskId' => $taskId,
             ]);
@@ -184,7 +210,6 @@ class TeacherController extends AbstractController
             'students' => $room->getStudents(),
         ]);
     }
-
 
     /**
      * @Route("/teacher/add-mark", name="teacher_add_mark")

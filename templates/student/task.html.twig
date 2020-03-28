@@ -16,13 +16,19 @@
       </div>
 
       <div class="col-sm-12">
-        Ваш ответ: {{ answer.answer }}
+        Описание ответа: {{ answer.description }}
+      </div>
+      <div class="col-sm-12">
+        Ответ: <a href="{{ asset('uploads/' ~ answer.file) }}" download><i class="fas fa-file-alt"></i></a>
+
+
       </div>
 
       <div class="col-sm-12">
-        {{ form_start(addAnswerStudentForm) }}
-        {{ form_row(addAnswerStudentForm.answer) }}
-        {{ form_end(addAnswerStudentForm) }}
+        {{ form_start(addAnswerForm) }}
+        {{ form_row(addAnswerForm.description) }}
+        {{ form_row(addAnswerForm.file) }}
+        {{ form_end(addAnswerForm) }}
       </div>
 
     </div>

@@ -15,7 +15,7 @@
           <div class="card" style="width: 18rem;">
             <div class="card-body">
               <h5 class="card-title"><a href="{{ path('teacher_room', {'roomId': room.id}) }}">{{ room.name }}</a></h5>
-              <a href="" class="btn btn-warning">Редактировать</a>
+              <a href="{{ path('teacher_room_edit', {'roomId': room.id}) }}" class="btn btn-warning">Редактировать</a>
               <a href="{{ path('teacher_room_delete', {'roomId': room.id}) }}" class="btn btn-danger">Удалить</a>
             </div>
           </div>

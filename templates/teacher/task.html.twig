@@ -29,6 +29,7 @@
           <tr>
             <th scope="col">№</th>
             <th scope="col">Студент</th>
+            <th scope="col">Описание ответа</th>
             <th scope="col">Ответ</th>
             <th scope="col">Оценка</th>
           </tr>
@@ -39,34 +40,45 @@
             <tr>
               <th scope="row">{{ key+1 }}</th>
               <td>{{ student.email }}</td>
-              <td>{{ (student.getAnswer(task.id)) ? student.getAnswer(task.id).answer : "-" }}</td>
-              <td>
-                {% if (student.getAnswer(task.id)) %}
-                  {{ student.getAnswer(task.id).mark }}
-                  <div class="mark-wrapper">
-                    <a class="btn btn-link" data-toggle="collapse" href="#collapseExample" role="button"
-                       aria-expanded="false" aria-controls="collapseExample">
-                      Выставить оценку
-                    </a>
 
-                    <div class="collapse" id="collapseExample">
+              {% if (student.getAnswer(task.id)) %}
+                <td>{{ (student.getAnswer(task.id)).description ? student.getAnswer(task.id).description : "-" }}</td>
+                <td>
+                  {% if ((student.getAnswer(task.id)).file) %}
+                    <a href="{{ asset('uploads/' ~ student.getAnswer(task.id).file) }}" download><i
+                          class="fas fa-file-alt"></i></a>
+                  {% else %}
+                    -
+                  {% endif %}
+                </td>
+                <td>
+                    {{ student.getAnswer(task.id).mark }}
+                    <div class="mark-wrapper">
+                      <a class="btn btn-link" data-toggle="collapse" href="#collapseExample" role="button"
+                         aria-expanded="false" aria-controls="collapseExample">
+                        Выставить оценку
+                      </a>
 
-                      <form action="{{ path('teacher_add_mark') }}" method="post">
-                        <div class="form-group">
-                          <label for="mark{{ key }}">Введите оценку</label>
-                          <input type="number" class="form-control" name="mark" id="mark{{ key }}">
-                        </div>
-                        <input class="d-none" type="text" name="studentId" value="{{ student.id }}">
-                        <input class="d-none" type="text" name="taskId" value="{{ task.id }}">
-                        <button type="submit" class="btn btn-primary">Сохранить</button>
-                      </form>
+                      <div class="collapse" id="collapseExample">
 
+                        <form action="{{ path('teacher_add_mark') }}" method="post">
+                          <div class="form-group">
+                            <label for="mark{{ key }}">Введите оценку</label>
+                            <input type="number" class="form-control" name="mark" id="mark{{ key }}">
+                          </div>
+                          <input class="d-none" type="text" name="studentId" value="{{ student.id }}">
+                          <input class="d-none" type="text" name="taskId" value="{{ task.id }}">
+                          <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </form>
+
+                      </div>
                     </div>
-                  </div>
-                {% else %}
-                  -
-                {% endif %}
-              </td>
+                </td>
+              {% else %}
+                <td colspan="3">Нет ответа</td>
+              {% endif %}
+
+
             </tr>
           {% endfor %}
 
