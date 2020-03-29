@@ -86,6 +86,17 @@ class Room
         return $this->tasks;
     }
 
+    public function getTask($taskId)
+    {
+        foreach ($this->tasks as $task) {
+            if ($task->getId() == $taskId) {
+                return $task;
+            }
+        }
+
+        return null;
+    }
+
     public function addTask(Task $task): self
     {
         if (!$this->tasks->contains($task)) {
@@ -95,6 +106,8 @@ class Room
 
         return $this;
     }
+
+
 
     public function removeTask(Task $task): self
     {

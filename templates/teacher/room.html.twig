@@ -21,7 +21,7 @@
             <div class="card-body">
               <h5 class="card-title"><a href="{{ path('teacher_task', {'roomId': room.id, 'taskId': task.id}) }}">{{ task.name }}</a></h5>
               <a href="#" class="btn btn-warning">Редактировать</a>
-              <a href="{{ path('teacher_room_delete', {'roomId': room.id}) }}" class="btn btn-danger">Удалить</a>
+              <a href="{{ path('teacher_task_delete', {'roomId' : room.id, 'taskId': task.id}) }}" class="btn btn-danger">Удалить</a>
             </div>
           </div>
         </div>
@@ -40,6 +40,18 @@
             {{ form_end(addTaskForm) }}
           </div>
         </div>
+      </div>
+
+      <div class="col-sm-4">
+        <div class="card">
+          <h5 class="card-header">Добавление студента</h5>
+          <div class="card-body">
+            {{ form_start(addStudentForm) }}
+            {{ form_row(addStudentForm.email) }}
+            {{ form_end(addStudentForm) }}
+          </div>
+        </div>
+
       </div>
     </div>
 

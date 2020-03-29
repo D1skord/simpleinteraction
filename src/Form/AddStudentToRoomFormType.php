@@ -22,7 +22,7 @@ class AddStudentToRoomFormType extends AbstractType
                 ]
             ])
             ->add('invite', SubmitType::class,[
-                'label' => 'Присоединить студента',
+                'label' => 'Добавить студента',
                 'attr' => [
                     'class' => 'btn btn-primary'
                 ]

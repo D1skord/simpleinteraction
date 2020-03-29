@@ -21,7 +21,7 @@ class AddRoomFormType extends AbstractType
                 ]
             ])
             ->add('add', SubmitType::class,[
-                'label' => 'Добавить',
+                'label' => 'Сохранить',
                 'attr' => [
                     'class' => 'btn btn-primary'
                 ]

@@ -70,9 +70,7 @@ class Student extends User
 
     public function getAnswer($taskId)
     {
-       $answers =  $this->getAnswers();
-
-       foreach ($answers as $answer) {
+       foreach ($this->answers as $answer) {
            if ($answer->getTask()->getId() == $taskId && $answer->getStudent()->getId() == $this->getId()) {
                return $answer;
            }

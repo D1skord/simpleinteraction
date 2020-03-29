@@ -61,10 +61,8 @@ class TeacherController extends AbstractController
     public function room(Request $request, $roomId)
     {
         $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
-        $tasks = $room->getTasks();
 
         $task = new Task();
-
         $addTaskForm = $this->createForm(AddTaskFormType::class, $task);
         $addTaskForm->handleRequest($request);
         if ($addTaskForm->isSubmitted() && $addTaskForm->isValid()) {
@@ -99,9 +97,37 @@ class TeacherController extends AbstractController
             $entityManager->flush();
         }
 
+        $addStudentForm = $this->createForm(AddStudentToRoomFormType::class);
+        $addStudentForm->handleRequest($request);
+        if ($addStudentForm->isSubmitted() && $addStudentForm->isValid()) {
+
+            $student = $this->getDoctrine()->getRepository(Student::class)->findOneBy(['email' => $addStudentForm->get('email')->getData()]);
+
+            if (!empty($student)) {
+                $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
+
+                $room->addStudent($student);
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($room);
+                $entityManager->flush();
+
+                $this->addFlash(
+                    'success',
+                    'Студент добавлен!'
+                );
+            } else {
+                $this->addFlash(
+                    'danger',
+                    'Студент не найден!'
+                );
+            }
+        }
+
         return $this->render('teacher/room.html.twig', [
             'addTaskForm' => $addTaskForm->createView(),
-            'tasks' => $tasks,
+            'addStudentForm' => $addStudentForm->createView(),
+            'tasks' => $room->getTasks(),
             'room' => $room
         ]);
     }
@@ -165,49 +191,38 @@ class TeacherController extends AbstractController
         $task = $this->getDoctrine()->getRepository(Task::class)->findOneBy(['id' => $taskId]);
         $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
 
-
-        $form = $this->createForm(AddStudentToRoomFormType::class);
-
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $student = $this->getDoctrine()->getRepository(Student::class)->findOneBy(['email' => $form->get('email')->getData()]);
-
-            if (!empty($student)) {
-                $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
-
-                $room->addStudent($student);
-
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($room);
-                $entityManager->flush();
-
-                $this->addFlash(
-                    'success',
-                    'Студент добавлен!'
-                );
-            } else {
-                $this->addFlash(
-                    'danger',
-                    'Студент не найден!'
-                );
-            }
-
-            return $this->redirectToRoute('teacher_task', [
-                'roomId' => $roomId,
-                'taskId' => $taskId,
-            ]);
-        }
-
-
-
-
         return $this->render('teacher/task.html.twig', [
             'room' => $room,
             'task' => $task,
-            'addStudentForm' => $form->createView(),
+
             'students' => $room->getStudents(),
+        ]);
+    }
+
+    /**
+     * @Route("/teacher/rooms/{roomId}/task/{taskId}/delete", name="teacher_task_delete")
+     */
+    public function taskDelete($roomId, $taskId)
+    {
+        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy([
+            'id' => $roomId
+        ]);
+
+        $task = $room->getTask($taskId);
+
+        $room->removeTask($task);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($room);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            'Задание удалено!'
+        );
+
+        return $this->redirectToRoute('teacher_room', [
+            'roomId' => $room->getId()
         ]);
     }
 
