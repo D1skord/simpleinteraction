@@ -29,6 +29,11 @@ class Room
     private $name;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $description;
+
+    /**
      * @ManyToOne(targetEntity="Teacher", inversedBy="rooms")
      */
     private $teacher;
@@ -146,6 +151,18 @@ class Room
             $this->students->removeElement($student);
             $student->removeRoom($this);
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

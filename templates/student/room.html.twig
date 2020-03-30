@@ -5,6 +5,23 @@
 {% block body %}
   <div class="container">
     <div class="row">
+      <div class="col-sm-12">
+        <h1 class="mt-4">Комната {{ room.name }}</h1>
+        <ol class="breadcrumb mb-4">
+          <li class="breadcrumb-item"><a href="{{ path('teacher_rooms') }}">Главная</a></li>
+          <li class="breadcrumb-item active">{{ room.name }}</li>
+        </ol>
+      </div>
+    </div>
+    {% if (room.description | length ) %}
+      <div class="row pb-3">
+        <div class="col-sm-12">
+          <strong>Описание:</strong><br>
+          {{ room.description | nl2br }}
+        </div>
+      </div>
+    {% endif %}
+    <div class="row">
       {% for task in tasks %}
         <div class="col-sm-4 pt-3">
           <div class="card" style="width: 18rem;">

@@ -20,9 +20,7 @@ class AddAnswerFormType extends AbstractType
         $builder
             ->add('description', TextareaType::class, [
                 'label' => 'Описание ответа',
-                'attr' => [
-                    'class' => 'form-group'
-                ]
+
             ])
             ->add('file', FileType::class, [
                 'label' => 'Задание',

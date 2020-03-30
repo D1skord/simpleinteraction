@@ -19,15 +19,10 @@ class AddTaskFormType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Название',
-                'attr' => [
-                    'class' => 'form-group'
-                ]
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Описание',
-                'attr' => [
-                    'class' => 'form-group'
-                ]
+                'required' => false,
             ])
             ->add('file', FileType::class, [
                 'label' => 'Задание',
