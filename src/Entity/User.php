@@ -24,10 +24,16 @@ class User implements UserInterface
    */
   protected $email;
 
-  /**
-   * @ORM\Column(type="json")
-   */
-  protected $roles = [];
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $name;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $surname;
+
 
   /**
    * @var string The hashed password
@@ -51,6 +57,30 @@ class User implements UserInterface
 
     return $this;
   }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getSurname(): ?string
+    {
+        return $this->surname;
+    }
+
+    public function setSurname(string $surname): self
+    {
+        $this->surname = $surname;
+
+        return $this;
+    }
 
   /**
    * A visual identifier that represents this user.

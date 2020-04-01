@@ -22,8 +22,32 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('name', TextType::class, [
+                'label' => 'Имя',
+                'row_attr' => [
+                    'class' => 'form-group'
+                ],
+                'attr' => [
+                    'class' => 'form-control'
+                ]
+            ])
+            ->add('surname', TextType::class, [
+                'label' => 'Фамилия',
+                'row_attr' => [
+                    'class' => 'form-group'
+                ],
+                'attr' => [
+                    'class' => 'form-control'
+                ]
+            ])
             ->add('email', TextType::class, [
-                'label' => 'Почтовый адрес'
+                'label' => 'Почтовый адрес',
+                'row_attr' => [
+                    'class' => 'form-group'
+                ],
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
@@ -40,16 +64,34 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
-                'label' => 'Пороль'
+                'label' => 'Пороль',
+                'row_attr' => [
+                    'class' => 'form-group'
+                ],
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ])
             ->add('role', ChoiceType::class, [
-                'choices'  => [
-                    'Ученик' => 'Student',
-                    'Преподаватель' => 'Teacher'
-                ]]
+                    'label' => 'Выберите роль',
+                    'choices' => [
+                        'Ученик' => 'Student',
+                        'Преподаватель' => 'Teacher'
+                    ],
+                    'row_attr' => [
+                        'class' => 'form-group'
+                    ],
+                    'attr' => [
+                        'class' => 'form-control'
+                    ]
+                ]
             )
-            ->add('save', SubmitType::class)
-        ;
+            ->add('save', SubmitType::class, [
+                'label' => 'Зарегистрироваться',
+                'attr' => [
+                    'class' => 'btn btn-primary'
+                ]
+            ]);
     }
 
 
