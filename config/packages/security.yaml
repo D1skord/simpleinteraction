@@ -42,5 +42,6 @@ security:
   access_control:
     # - { path: ^/admin, roles: ROLE_ADMIN }
     # - { path: ^/profile, roles: ROLE_USER }
-#    - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-#    - { path: ^/teacher , allow_if: "has_role('Teacher')"}
+    #    - { path: ^/login$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/teacher , allow_if: "has_role('Teacher')"}
+    - { path: ^/student , allow_if: "has_role('Student')"}
