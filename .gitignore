@@ -16,6 +16,7 @@
 ###< symfony/phpunit-bridge ###
 
 .idea
+/public/uploads
 
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
