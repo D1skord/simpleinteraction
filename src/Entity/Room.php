@@ -39,7 +39,7 @@ class Room
     private $teacher;
 
     /**
-     * @ORM\OneToMany(targetEntity="Task", mappedBy="room")
+     * @ORM\OneToMany(targetEntity="Task", mappedBy="room", cascade={"persist", "remove"})
      */
     private $tasks;
 
@@ -111,8 +111,6 @@ class Room
 
         return $this;
     }
-
-
 
     public function removeTask(Task $task): self
     {

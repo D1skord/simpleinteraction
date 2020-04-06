@@ -41,7 +41,7 @@
                 <div class="card-body">
                   <ul class="list-group">
                     {% for key, student in room.students %}
-                      <li class="list-group-item">{{ key+1 }}. {{ student.email }}</li>
+                      <li class="list-group-item">{{ key+1 }}. {{ student.name }} {{ student.surname }} ({{ student.email }})</li>
                     {% endfor %}
                   </ul>
                 </div>
@@ -57,12 +57,12 @@
     </div>
     <div class="row">
       {% for task in tasks %}
-        <div class="col-sm-4 pt-3">
+        <div class="col-sm-4 py-3">
           <div class="card" style="width: 18rem;">
             <div class="card-body">
               <h5 class="card-title"><a
                     href="{{ path('teacher_task', {'roomId': room.id, 'taskId': task.id}) }}">{{ task.name }}</a></h5>
-              <a href="#" class="btn btn-warning">Редактировать</a>
+              <a href="{{ path('teacher_task_edit', {'roomId' : room.id, 'taskId': task.id}) }}" class="btn btn-warning">Редактировать</a>
               <a href="{{ path('teacher_task_delete', {'roomId' : room.id, 'taskId': task.id}) }}"
                  class="btn btn-danger">Удалить</a>
             </div>
@@ -70,7 +70,7 @@
         </div>
       {% endfor %}
     </div>
-    <div class="row">
+    <div class="row py-3">
       <div class="col-sm-4">
         <div class="card">
           <h5 class="card-header">Добавление задания</h5>

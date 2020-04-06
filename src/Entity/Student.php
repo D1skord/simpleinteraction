@@ -24,7 +24,7 @@ class Student extends User
     private $rooms;
 
     /**
-     * @ORM\OneToMany(targetEntity="Answer", mappedBy="student", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Answer", mappedBy="student", cascade={"persist", "remove"})
      */
     private $answers;
 

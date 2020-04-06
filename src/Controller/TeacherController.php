@@ -60,7 +60,7 @@ class TeacherController extends AbstractController
      */
     public function room(Request $request, $roomId)
     {
-        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
+        $room = $this->getUser()->getRoom($roomId);
 
         $task = new Task();
         $addTaskForm = $this->createForm(AddTaskFormType::class, $task);
@@ -137,7 +137,7 @@ class TeacherController extends AbstractController
      */
     public function roomEdit(Request $request, $roomId)
     {
-        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
+        $room = $this->getUser()->getRoom($roomId);
 
         $editRoomForm = $this->createForm(AddRoomFormType::class, $room);
         $editRoomForm->handleRequest($request);
@@ -164,10 +164,7 @@ class TeacherController extends AbstractController
      */
     public function roomDelete($roomId)
     {
-        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy([
-            'id' => $roomId
-        ]);
-
+        $room = $this->getUser()->getRoom($roomId);
 
         $this->getUser()->removeRoom($room);
 
@@ -188,8 +185,8 @@ class TeacherController extends AbstractController
      */
     public function task(Request $request, $roomId, $taskId)
     {
-        $task = $this->getDoctrine()->getRepository(Task::class)->findOneBy(['id' => $taskId]);
-        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
+        $room = $this->getUser()->getRoom($roomId);
+        $task = $room->getTask($taskId);
 
         return $this->render('teacher/task.html.twig', [
             'room' => $room,
@@ -200,20 +197,46 @@ class TeacherController extends AbstractController
     }
 
     /**
+     * @Route("/teacher/rooms/{roomId}/task/{taskId}/edit", name="teacher_task_edit")
+     */
+    public function taskEdit(Request $request, $roomId, $taskId)
+    {
+        $room = $this->getUser()->getRoom($roomId);
+        $task = $room->getTask($taskId);
+        $editTaskForm = $this->createForm(AddTaskFormType::class, $task);
+        $editTaskForm->handleRequest($request);
+        if ($editTaskForm->isSubmitted() && $editTaskForm->isValid()) {
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($room);
+            $entityManager->flush();
+            $this->addFlash(
+                'success',
+                'Комната добавлена!'
+            );
+            return $this->redirectToRoute('teacher_rooms');
+        }
+
+        return $this->render('teacher/task_edit.html.twig', [
+            'editTaskForm' => $editTaskForm->createView(),
+            'room' => $room,
+            'task' => $task
+        ]);
+    }
+
+    /**
      * @Route("/teacher/rooms/{roomId}/task/{taskId}/delete", name="teacher_task_delete")
      */
     public function taskDelete($roomId, $taskId)
     {
-        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy([
-            'id' => $roomId
-        ]);
+        $room = $this->getUser()->getRoom($roomId);
 
         $task = $room->getTask($taskId);
 
         $room->removeTask($task);
 
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($room);
+        $entityManager->persist($room);
         $entityManager->flush();
 
         $this->addFlash(
@@ -235,16 +258,9 @@ class TeacherController extends AbstractController
         $studentId =  $request->request->get('studentId');
         $mark =  $request->request->get('mark');
 
-        dump($studentId);
-
-        $task = $this->getDoctrine()->getRepository(Task::class)->findOneBy(['id' => $taskId]);
-
-
         $student = $this->getDoctrine()->getRepository(Student::class)->findOneBy(['id' => $studentId]);
         $answer = $student->getAnswer($taskId);
         $answer->setMark($mark);
-
-
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($answer);
@@ -255,10 +271,9 @@ class TeacherController extends AbstractController
             'Оценка сохранена!'
         );
 
-
         return $this->redirectToRoute('teacher_task', [
             'roomId' => $task->getRoom()->getId(),
-            'taskId' => $task->getId(),
+            'taskId' => $taskId,
         ]);
     }
 }

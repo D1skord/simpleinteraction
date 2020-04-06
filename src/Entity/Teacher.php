@@ -40,6 +40,17 @@ class Teacher extends User
       return $this->rooms;
   }
 
+  public function getRoom($roomId)
+    {
+        foreach ($this->rooms as $room) {
+            if ($room->getId() == $roomId) {
+                return $room;
+            }
+        }
+
+        return null;
+    }
+
   public function addRoom(Room $room): self
   {
       if (!$this->rooms->contains($room)) {

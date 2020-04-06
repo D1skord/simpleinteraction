@@ -67,15 +67,13 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
             throw new InvalidCsrfTokenException();
         }
 
-
-
         if ($student = $this->entityManager->getRepository(Student::class)->findOneBy(['email' => $credentials['email']])) {
             return $student;
         } elseif ($teacher = $this->entityManager->getRepository(Teacher::class)->findOneBy(['email' => $credentials['email']])) {
             return $teacher;
         } else {
             // fail authentication with a custom error
-            throw new CustomUserMessageAuthenticationException('Email could not be found.');
+            throw new CustomUserMessageAuthenticationException('Пользователь не найден!');
         }
 
     }

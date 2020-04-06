@@ -17,10 +17,22 @@ class AddRoomFormType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Имя комнаты',
+                'row_attr' => [
+                    'class' => 'form-group'
+                ],
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Описание',
                 'required' => false,
+                'row_attr' => [
+                    'class' => 'form-group'
+                ],
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ])
             ->add('add', SubmitType::class,[
                 'label' => 'Сохранить',

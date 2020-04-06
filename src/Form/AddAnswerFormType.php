@@ -20,7 +20,12 @@ class AddAnswerFormType extends AbstractType
         $builder
             ->add('description', TextareaType::class, [
                 'label' => 'Описание ответа',
-
+                'row_attr' => [
+                    'class' => 'form-group'
+                ],
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ])
             ->add('file', FileType::class, [
                 'label' => 'Задание',
@@ -31,6 +36,12 @@ class AddAnswerFormType extends AbstractType
                         'maxSize' => '1024k',
                     ])
                 ],
+                'row_attr' => [
+                    'class' => 'form-group'
+                ],
+                'attr' => [
+                    'class' => 'form-control'
+                ]
             ])
             ->add('add', SubmitType::class,[
                 'label' => 'Ответить',

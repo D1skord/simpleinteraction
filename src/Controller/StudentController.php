@@ -55,7 +55,6 @@ class StudentController extends AbstractController
     public function task(Request $request, $roomId, $taskId)
     {
         $task = $this->getDoctrine()->getRepository(Task::class)->findOneBy(['id' => $taskId]);
-       // $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
 
         if (empty($answer = $this->getUser()->getAnswer($taskId))) {
             $answer = new Answer();
@@ -105,11 +104,9 @@ class StudentController extends AbstractController
 
         return $this->render('student/task.html.twig', [
             'task' => $task,
+            'room' => $task->getRoom(),
             'answer' => $answer,
             'addAnswerForm' => $addAnswerForm->createView(),
         ]);
     }
-
-
-
 }

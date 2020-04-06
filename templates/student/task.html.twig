@@ -6,8 +6,35 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-12">
-
+        <h1 class="mt-4">Задание {{ task.name }}</h1>
+        <ol class="breadcrumb mb-4">
+          <li class="breadcrumb-item"><a href="{{ path('teacher_rooms') }}">Главная</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('teacher_room', {'roomId': room.id}) }}">{{ room.name }}</a></li>
+          <li class="breadcrumb-item active">{{ task.name }}</li>
+        </ol>
       </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12 py-3">
+        {% if (task.description | length ) %}
+          <div>
+            Описание: {{ task.description }}
+          </div>
+        {% endif %}
+
+        {% if (task.file | length ) %}
+          <div>
+            Задание: <a href="{{ asset('uploads/' ~ task.file) }}" download><i class="fas fa-file-alt"></i></a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row">
+
+
+
       <div class="col-sm-12">
         Название: {{ task.name }}
       </div>

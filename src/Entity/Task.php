@@ -41,7 +41,7 @@ class Task
     private $room;
 
     /**
-     * @ORM\OneToMany(targetEntity="Answer", mappedBy="task")
+     * @ORM\OneToMany(targetEntity="Answer", mappedBy="task", cascade={"persist", "remove"})
      */
     private $answers;
 

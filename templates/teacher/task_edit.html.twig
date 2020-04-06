@@ -5,29 +5,20 @@
 {% block body %}
   <div class="container">
     <div class="row">
-
-
       <div class="col-sm-12">
         <h1 class="mt-4">Редактирование задания {{ task.name }}</h1>
       </div>
-
-
     </div>
+
     <div class="row">
-      <div class="col-sm-4">
-        <div class="card">
-          <h5 class="card-header">Редактирование задания</h5>
-          <div class="card-body">
-            {{ form_start(editTaskForm) }}
-            {{ form_row(editTaskForm.name) }}
-            {{ form_row(editTaskForm.file) }}
-            {{ form_row(editTaskForm.description) }}
-            {{ form_end(editTaskForm) }}
-          </div>
-        </div>
+      <div class="col-sm-6">
+        {{ form_start(editTaskForm) }}
+        {{ form_row(editTaskForm.name) }}
+        {{ form_row(editTaskForm.file) }}
+        {{ form_row(editTaskForm.description) }}
+        {{ form_end(editTaskForm) }}
       </div>
     </div>
-
 
   </div>
 
