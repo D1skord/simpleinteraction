@@ -23,7 +23,7 @@ class Teacher extends User
 {
 
   /**
-   * @ORM\OneToMany(targetEntity="Room", mappedBy="teacher")
+   * @ORM\OneToMany(targetEntity="Room", mappedBy="teacher", cascade={"persist"})
    */
   private $rooms;
 
@@ -73,9 +73,5 @@ class Teacher extends User
 
       return $this;
   }
-
-
-
-
 
 }

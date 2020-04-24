@@ -8,8 +8,8 @@
       <div class="col-sm-12">
         <h1 class="mt-4">Задание {{ task.name }}</h1>
         <ol class="breadcrumb mb-4">
-          <li class="breadcrumb-item"><a href="{{ path('teacher_rooms') }}">Главная</a></li>
-          <li class="breadcrumb-item"><a href="{{ path('teacher_room', {'roomId': room.id}) }}">{{ room.name }}</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('student_rooms') }}">Главная</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('student_room', {'roomId': room.id}) }}">{{ room.name }}</a></li>
           <li class="breadcrumb-item active">{{ task.name }}</li>
         </ol>
       </div>
@@ -19,46 +19,53 @@
       <div class="col-sm-12 py-3">
         {% if (task.description | length ) %}
           <div>
-            Описание: {{ task.description }}
+            <strong>Описание:</strong><br>
+            {{ task.description }}
           </div>
         {% endif %}
 
         {% if (task.file | length ) %}
           <div>
-            Задание: <a href="{{ asset('uploads/' ~ task.file) }}" download><i class="fas fa-file-alt"></i></a>
+            <strong>Задание:</strong><br>
+            <a class="file" href="{{ asset('uploads/' ~ task.file) }}" download><i class="fas fa-file-alt"></i></a>
           </div>
         {% endif %}
       </div>
     </div>
 
     <div class="row">
-
-
-
       <div class="col-sm-12">
-        Название: {{ task.name }}
+        <strong>Ваш ответ</strong>
       </div>
-      <div class="col-sm-12">
-        Описание: {{ task.description }}
-      </div>
+      {% if (answer.description | length ) %}
+        <div class="col-sm-12">
+          <strong>Описание ответа</strong><br>
+          {{ answer.description }}
+        </div>
+      {% endif %}
 
-      <div class="col-sm-12">
-        Описание ответа: {{ answer.description }}
-      </div>
-      <div class="col-sm-12">
-        Ответ: <a href="{{ asset('uploads/' ~ answer.file) }}" download><i class="fas fa-file-alt"></i></a>
-
-
-      </div>
-
-      <div class="col-sm-12">
-        {{ form_start(addAnswerForm) }}
-        {{ form_row(addAnswerForm.description) }}
-        {{ form_row(addAnswerForm.file) }}
-        {{ form_end(addAnswerForm) }}
-      </div>
-
+      {% if (answer.file | length ) %}
+        <div class="col-sm-12">
+          <strong>Ответ</strong><br>
+          <a class="file" href="{{ asset('uploads/' ~ answer.file) }}" download><i class="fas fa-file-alt"></i></a>
+        </div>
+      {% endif %}
     </div>
+
+    <div class="row py-3">
+      <div class="col-sm-4">
+        <div class="card">
+          <h5 class="card-header">Ответ</h5>
+          <div class="card-body">
+            {{ form_start(addAnswerForm) }}
+            {{ form_row(addAnswerForm.description) }}
+            {{ form_row(addAnswerForm.file) }}
+            {{ form_end(addAnswerForm) }}
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
 

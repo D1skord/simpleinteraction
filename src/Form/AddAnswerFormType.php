@@ -28,7 +28,7 @@ class AddAnswerFormType extends AbstractType
                 ]
             ])
             ->add('file', FileType::class, [
-                'label' => 'Задание',
+                'label' => 'Ответ',
                 'required' => false,
                 'mapped' => false,
                 'constraints' => [
@@ -44,7 +44,7 @@ class AddAnswerFormType extends AbstractType
                 ]
             ])
             ->add('add', SubmitType::class,[
-                'label' => 'Ответить',
+                'label' => 'Сохранить',
                 'attr' => [
                     'class' => 'btn btn-primary'
                 ]

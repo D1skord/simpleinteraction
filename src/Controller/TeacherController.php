@@ -28,19 +28,13 @@ class TeacherController extends AbstractController
     {
 
         $room = new Room();
-
-        $rooms = $this->getUser()->getRooms();
-
         $addRoomForm = $this->createForm(AddRoomFormType::class, $room);
         $addRoomForm->handleRequest($request);
         if ($addRoomForm->isSubmitted() && $addRoomForm->isValid()) {
-            // encode the plain password
-            //$room->setTeacher($this->getUser());
             $this->getUser()->addRoom($room);
-            $room = $addRoomForm->getData();
 
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($room);
+            $entityManager->persist($this->getUser());
             $entityManager->flush();
             $this->addFlash(
                 'success',
@@ -51,7 +45,7 @@ class TeacherController extends AbstractController
 
         return $this->render('teacher/rooms.html.twig', [
             'addRoomForm' => $addRoomForm->createView(),
-            'rooms' => $rooms
+            'rooms' => $this->getUser()->getRooms()
         ]);
     }
 
@@ -148,9 +142,11 @@ class TeacherController extends AbstractController
             $entityManager->flush();
             $this->addFlash(
                 'success',
-                'Комната добавлена!'
+                'Комната изменена!'
             );
-            return $this->redirectToRoute('teacher_rooms');
+            return $this->redirectToRoute('teacher_room', [
+                'roomId' => $roomId
+            ]);
         }
 
         return $this->render('teacher/room_edit.html.twig', [
@@ -207,14 +203,40 @@ class TeacherController extends AbstractController
         $editTaskForm->handleRequest($request);
         if ($editTaskForm->isSubmitted() && $editTaskForm->isValid()) {
 
+            $file = $editTaskForm->get('file')->getData();
+
+            if ($file) {
+                $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename = urlencode ($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+
+                // Move the file to the directory where brochures are stored
+                try {
+                    $file->move(
+                        $this->getParameter('files_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+
+                // updates the 'brochureFilename' property to store the PDF file name
+                // instead of its contents
+                $task->setFile($newFilename);
+            }
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($room);
             $entityManager->flush();
             $this->addFlash(
                 'success',
-                'Комната добавлена!'
+                'Задание изменено!'
             );
-            return $this->redirectToRoute('teacher_rooms');
+            return $this->redirectToRoute('teacher_task', [
+                'roomId' => $roomId,
+                'taskId' => $taskId
+            ]);
         }
 
         return $this->render('teacher/task_edit.html.twig', [
@@ -272,7 +294,7 @@ class TeacherController extends AbstractController
         );
 
         return $this->redirectToRoute('teacher_task', [
-            'roomId' => $task->getRoom()->getId(),
+            'roomId' => $taskId,
             'taskId' => $taskId,
         ]);
     }

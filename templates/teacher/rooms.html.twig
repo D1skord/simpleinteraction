@@ -13,22 +13,21 @@
       {% for room in rooms %}
         <div class="col-sm-4 py-3 d-flex justify-content-center">
           <div class="card" style="width: 18rem;">
-            <div class="card-body">
+            <div class="card-body d-flex flex-column justify-content-between">
               <h5 class="card-title"><a href="{{ path('teacher_room', {'roomId': room.id}) }}">{{ room.name }}</a></h5>
-              <div>
+              <div class="pb-2">
                 {{ room.description | nl2br }}
               </div>
-              <a href="{{ path('teacher_room_edit', {'roomId': room.id}) }}" class="btn btn-warning">Редактировать</a>
-              <a href="{{ path('teacher_room_delete', {'roomId': room.id}) }}" class="btn btn-danger">Удалить</a>
+              <div>
+                <a href="{{ path('teacher_room_edit', {'roomId': room.id}) }}" class="btn btn-warning">Редактировать</a>
+                <a href="{{ path('teacher_room_delete', {'roomId': room.id}) }}" class="btn btn-danger">Удалить</a>
+              </div>
             </div>
           </div>
         </div>
       {% endfor %}
 
-
     </div>
-
-
 
     <div class="row d-flex justify-content-center py-3">
       <div class="col-sm-4">
