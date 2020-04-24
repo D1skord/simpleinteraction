@@ -35,18 +35,23 @@
 
     <div class="row">
       <div class="col-sm-12">
-        <strong>Ваш ответ</strong>
+        {% if (answer.mark | length ) %}
+          <strong class="text-success">Ваша оценка: </strong>
+          {{ answer.mark }}
+        {% else %}
+          <strong class="text-warning">Оценка еще не выставлена!</strong>
+        {% endif %}
       </div>
       {% if (answer.description | length ) %}
         <div class="col-sm-12">
-          <strong>Описание ответа</strong><br>
+          <strong>Описание ответа:</strong><br>
           {{ answer.description }}
         </div>
       {% endif %}
 
       {% if (answer.file | length ) %}
         <div class="col-sm-12">
-          <strong>Ответ</strong><br>
+          <strong>Ответ:</strong><br>
           <a class="file" href="{{ asset('uploads/' ~ answer.file) }}" download><i class="fas fa-file-alt"></i></a>
         </div>
       {% endif %}
