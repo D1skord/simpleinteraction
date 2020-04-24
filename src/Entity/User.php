@@ -95,7 +95,7 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles[] = basename(get_class($this));
+        $roles[] = substr(strrchr(get_class($this), "\\"), 1);
 
         return array_unique($roles);
     }
