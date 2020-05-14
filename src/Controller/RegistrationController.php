@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Student;
 use App\Entity\Teacher;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 
 class RegistrationController extends AbstractController
@@ -26,37 +28,40 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $roleClass = "App\Entity\\" . $form->get('role')->getData();
-            $newUser = new $roleClass();
-            // encode the plain password
-            $newUser->setPassword(
-                $passwordEncoder->encodePassword(
-                    $newUser,
-                    $form->get('plainPassword')->getData()
-                )
-            );
-
-            $newUser->setName($form->get('name')->getData());
-            $newUser->setSurname($form->get('surname')->getData());
-            $newUser->setEmail($form->get('email')->getData());
 
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($newUser);
-            $entityManager->flush();
-            $this->addFlash(
-                'success',
-                'Вы успешно зарегистрировались в системе!'
-            );
-            // do anything else you need here, like send an email
+            $student = $entityManager->getRepository(Student::class)->findOneBy(['email' => $form->get('email')->getData()]);
+            $teacher = $entityManager->getRepository(Student::class)->findOneBy(['email' => $form->get('email')->getData()]);
 
-//            return $guardHandler->authenticateUserAndHandleSuccess(
-//                $newUser,
-//                $request,
-//                $authenticator,
-//                'main' // firewall name in security.yaml
-//            );
-            return $this->redirectToRoute('app_login');
+            if (!empty($student) || !empty($teacher)) {
+                $this->addFlash(
+                    'danger',
+                    'Пользователь с таким email уже существует!'
+                );
+            } else {
+                $roleClass = "App\Entity\\" . $form->get('role')->getData();
+                $newUser = new $roleClass();
+                // encode the plain password
+                $newUser->setPassword(
+                    $passwordEncoder->encodePassword(
+                        $newUser,
+                        $form->get('plainPassword')->getData()
+                    )
+                );
 
+                $newUser->setName($form->get('name')->getData());
+                $newUser->setSurname($form->get('surname')->getData());
+                $newUser->setEmail($form->get('email')->getData());
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($newUser);
+                $entityManager->flush();
+                $this->addFlash(
+                    'success',
+                    'Вы успешно зарегистрировались в системе!'
+                );
+                return $this->redirectToRoute('app_login');
+            }
 
         }
 
