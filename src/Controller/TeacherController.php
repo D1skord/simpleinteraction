@@ -68,8 +68,8 @@ class TeacherController extends AbstractController
             if ($file) {
                 $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 // this is needed to safely include the file name as part of the URL
-                $safeFilename = urlencode ($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+                $safeFilename = urlencode($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
 
                 // Move the file to the directory where brochures are stored
                 try {
@@ -89,6 +89,11 @@ class TeacherController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($task);
             $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                'Задание добавлено!'
+            );
         }
 
         $addStudentForm = $this->createForm(AddStudentToRoomFormType::class);
@@ -208,8 +213,8 @@ class TeacherController extends AbstractController
             if ($file) {
                 $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                 // this is needed to safely include the file name as part of the URL
-                $safeFilename = urlencode ($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$file->guessExtension();
+                $safeFilename = urlencode($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
 
                 // Move the file to the directory where brochures are stored
                 try {
@@ -277,11 +282,10 @@ class TeacherController extends AbstractController
     public function AddMark(Request $request)
     {
         $taskId = $request->request->get('taskId');
-        $studentId =  $request->request->get('studentId');
-        $mark =  $request->request->get('mark');
+        $studentId = $request->request->get('studentId');
+        $mark = $request->request->get('mark');
 
-        $student = $this->getDoctrine()->getRepository(Student::class)->findOneBy(['id' => $studentId]);
-        $answer = $student->getAnswer($taskId);
+        $answer = $this->getDoctrine()->getRepository(Answer::class)->findOneBy(['task' => $taskId, 'student' => $studentId]);
         $answer->setMark($mark);
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -293,9 +297,35 @@ class TeacherController extends AbstractController
             'Оценка сохранена!'
         );
 
+        $task = $answer->getTask();
+
         return $this->redirectToRoute('teacher_task', [
-            'roomId' => $taskId,
-            'taskId' => $taskId,
+            'roomId' => $task->getRoom()->getId(),
+            'taskId' => $task->getId(),
+        ]);
+    }
+
+    /**
+     * @Route("/teacher/remove-student/{roomId}/{studentId}", name="teacher_remove_student")
+     */
+    public function RemoveStudent(Request $request, $roomId, $studentId)
+    {
+        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
+        $student = $room->getStudent($studentId);
+
+        $room->removeStudent($student);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($room);
+        $entityManager->flush();
+
+        $this->addFlash(
+            'success',
+            'Студент удален из комнаты!'
+        );
+
+        return $this->redirectToRoute('teacher_room', [
+            'roomId' => $roomId,
         ]);
     }
 }

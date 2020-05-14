@@ -24,9 +24,6 @@ class StudentController extends AbstractController
      */
     public function rooms(Request $request)
     {
-
-        $room = new Room();
-
         $rooms = $this->getUser()->getRooms();
 
         return $this->render('student/rooms.html.twig', [
@@ -39,7 +36,7 @@ class StudentController extends AbstractController
      */
     public function room(Request $request, $roomId)
     {
-        $room = $this->getDoctrine()->getRepository(Room::class)->findOneBy(['id' => $roomId]);
+        $room = $this->getUser()->getRoom($roomId);
         $tasks = $room->getTasks();
 
 
@@ -54,7 +51,8 @@ class StudentController extends AbstractController
      */
     public function task(Request $request, $roomId, $taskId)
     {
-        $task = $this->getDoctrine()->getRepository(Task::class)->findOneBy(['id' => $taskId]);
+        $room = $this->getUser()->getRoom($roomId);
+        $task = $room->getTask($taskId);
 
         if (empty($answer = $this->getUser()->getAnswer($taskId))) {
             $answer = new Answer();

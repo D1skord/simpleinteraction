@@ -133,6 +133,17 @@ class Room
         return $this->students;
     }
 
+    public function getStudent($studentId)
+    {
+        foreach ($this->students as $student) {
+            if ($student->getId() == $studentId) {
+                return $student;
+            }
+        }
+
+        return null;
+    }
+
     public function addStudent(Student $student): self
     {
         if (!$this->students->contains($student)) {

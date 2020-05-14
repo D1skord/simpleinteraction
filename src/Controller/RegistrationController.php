@@ -43,7 +43,10 @@ class RegistrationController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($newUser);
             $entityManager->flush();
-
+            $this->addFlash(
+                'success',
+                'Вы успешно зарегистрировались в системе!'
+            );
             // do anything else you need here, like send an email
 
 //            return $guardHandler->authenticateUserAndHandleSuccess(

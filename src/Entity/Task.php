@@ -99,6 +99,17 @@ class Task
         return $this->answers;
     }
 
+    public function getAnswer($answerId)
+    {
+        foreach ($this->answers as $answer) {
+            if ($answer->getId() == $answerId) {
+                return $answer;
+            }
+        }
+
+        return null;
+    }
+
     public function addAnswer(Answer $answer): self
     {
         if (!$this->answers->contains($answer)) {

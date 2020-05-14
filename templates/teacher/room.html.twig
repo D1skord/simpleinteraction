@@ -46,7 +46,9 @@
                 <div class="card-body">
                   <ul class="list-group">
                     {% for key, student in room.students %}
-                      <li class="list-group-item">{{ key+1 }}. {{ student.name }} {{ student.surname }} ({{ student.email }})</li>
+                      <li class="list-group-item">{{ key+1 }}. {{ student.name }} {{ student.surname }} ({{ student.email }})
+                        <a href="{{ path('teacher_remove_student', {'roomId' : room.id, 'studentId': student.id}) }}" class="btn btn-danger">Удалить</a>
+                      </li>
                     {% endfor %}
                   </ul>
                 </div>

@@ -42,22 +42,15 @@ class Student extends User
         return $this->rooms;
     }
 
-    public function addRoom(Room $room): self
+    public function getRoom($roomId)
     {
-        if (!$this->rooms->contains($room)) {
-            $this->rooms[] = $room;
+        foreach ($this->rooms as $room) {
+            if ($room->getId() == $roomId) {
+                return $room;
+            }
         }
 
-        return $this;
-    }
-
-    public function removeRoom(Room $room): self
-    {
-        if ($this->rooms->contains($room)) {
-            $this->rooms->removeElement($room);
-        }
-
-        return $this;
+        return null;
     }
 
     /**
