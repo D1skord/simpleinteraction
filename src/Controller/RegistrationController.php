@@ -31,7 +31,7 @@ class RegistrationController extends AbstractController
 
             $entityManager = $this->getDoctrine()->getManager();
             $student = $entityManager->getRepository(Student::class)->findOneBy(['email' => $form->get('email')->getData()]);
-            $teacher = $entityManager->getRepository(Student::class)->findOneBy(['email' => $form->get('email')->getData()]);
+            $teacher = $entityManager->getRepository(Teacher::class)->findOneBy(['email' => $form->get('email')->getData()]);
 
             if (!empty($student) || !empty($teacher)) {
                 $this->addFlash(
